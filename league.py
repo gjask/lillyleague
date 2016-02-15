@@ -68,21 +68,34 @@ class League(object):
     def _get_timestamp(self):
         return int(os.path.getmtime(self.datafile) + .5)
 
+    @staticmethod
+    def _eval_match(games):
+        results = collections.Counter([g[1] for g in games])
+        return results['+'], results['-'], results['=']
+
     def _eval_score(self):
         self._score = collections.Counter()
         for match, games in self._games.items():
-            results = collections.Counter([g[1] for g in games])
-            w, l, j = results['+'], results['-'], results['=']
+            w, l, j = self._eval_match(games)
             s = 2*l + 3*j + bool(w)*(3*w+1)
             self._score[match[0]] += s
 
     def _eval_order(self):
-        # todo redo according to rules
         score = self.score().items()
-        s = enumerate(sorted(score, key=operator.itemgetter(1), reverse=True))
-        self._order = {p[1][0]: p[0]+1 for p in s}
-        print list(s)
-        print self._order
+        s = sorted(score, key=operator.itemgetter(1), reverse=True)
+        self._order = {}
+        d = 0
+        for i in range(len(s)):
+            if i != 0 and s[i-1][1] == s[i][1]:
+                d += 1
+            self._order[s[i][0]] = i+1-d
+
+    # def _direct_match_cmp(self, a, b):
+    #     w, l, j = self._eval_match(self._games[(a, b)])
+    #     return w > l
+    #
+    # def _number_of_wins(self, a, b):
+    #     pass
 
     def from_csv(self):
         self._timestamp = self._get_timestamp()
