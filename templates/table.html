@@ -1,30 +1,58 @@
-<style>
-    table, td, th {
-        border: solid 1px;
-        margin: 0;
-        padding: 0;
-    }
-</style>
-
-<table>
-    <td>#</td>
-    <td>Name</td>
-    <td>Pts</td>
-    {% for column in players %}
-        <td>{{ column }}</td>
-    {% endfor %}
-    {% for row, player in players.items() %}
-        <tr>
-        <td>{{ row }}</td>
-        <td>{{ player['name'] }}</td>
-        <td>{{ score[row] }}</td>
-        {% for opp in players %}
-            <td>
-            {% for game in games[(row,opp)] %}
-                {{ game[1] }}
-            {% endfor %}
-            </td>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liliová liga</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, td, th {
+            border: none;
+            margin: 0;
+            padding: 6px;
+        }
+        td{
+            border-left: solid 1px;
+            border-right: solid 1px;
+        }
+        tr:nth-child(even){
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <h1>Čajový go klub ATea - Liliová čajovna</h1>
+    <h2>Liliová liga - 1. čtvrtletí</h2>
+    <p>
+        <a href="https://docs.google.com/document/d/13MxEwH9uZFdYG13E8GAF899YkJoY28zs2qPJqEwCzh8">Pravidla ligy</a> |
+        <a href="http://liliovacajovna.cz/cze/">Stránky čajovny</a>
+    </p>
+    <h3>Průběžné výsledky (last update: 10.2.2016)</h3>
+    <table>
+        <td>#</td>
+        <td>Name</td>
+        <td>Pts</td>
+        <td>Ord</td>
+        {% for column in players %}
+            <td>{{ column }}</td>
         {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
+        {% for row, player in players.items() %}
+            <tr>
+            <td>{{ row }}</td>
+            <td>{{ player['name'] }}</td>
+            <td>{{ score[row] }}</td>
+            <td>{{ order[row] }}</td>
+            {% for opp in players %}
+                <td>
+                {% for game in games[(row,opp)] %}
+                    {{ game[1] }}
+                {% endfor %}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <p>Pořadí je pouze orientační! Nezohledňuje všechny pravidla ligy.</p>
+</body>
+</html>

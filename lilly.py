@@ -12,11 +12,12 @@ app = Flask(__name__)
 @app.route('/')
 def league_table():
     league.refresh()
-    players = league.get_players()
-    games = league.get_games()
-    score = league.get_score()
     return render_template('table.html',
-                           players=players, games=games, score=score)
+                           players=league.players(),
+                           games=league.games(),
+                           score=league.score(),
+                           order=league.order()
+                           )
 
 
 if __name__ == '__main__':

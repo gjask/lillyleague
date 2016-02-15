@@ -1,6 +1,7 @@
 import csv
 import os
 import collections
+import operator
 
 # model:
 # players = {
@@ -20,6 +21,7 @@ class League(object):
         self._players = None
         self._games = None
         self._score = None
+        self._order = None
         self.datafile = datafile
         self.from_csv()
         self._timestamp = 0
@@ -27,16 +29,24 @@ class League(object):
     def flush(self):
         self._players = {}
         self._games = collections.defaultdict(list)
-        self._score = collections.Counter()
+        self._score = None
+        self._order = None
 
-    def get_players(self):
-        return self._players.copy()
+    def players(self):
+        return self._players
 
-    def get_games(self):
-        return self._games.copy()
+    def games(self):
+        return self._games
 
-    def get_score(self):
-        return self._score.copy()
+    def score(self):
+        if not self._score:
+            self._eval_score()
+        return self._score
+
+    def order(self):
+        if not self._order:
+            self._eval_order()
+        return self._order
 
     def refresh(self):
         if self._timestamp < self._get_timestamp():
@@ -58,13 +68,21 @@ class League(object):
     def _get_timestamp(self):
         return int(os.path.getmtime(self.datafile) + .5)
 
-    def score(self):
+    def _eval_score(self):
         self._score = collections.Counter()
         for match, games in self._games.items():
             results = collections.Counter([g[1] for g in games])
             w, l, j = results['+'], results['-'], results['=']
             s = 2*l + 3*j + bool(w)*(3*w+1)
             self._score[match[0]] += s
+
+    def _eval_order(self):
+        # todo redo according to rules
+        score = self.score().items()
+        s = enumerate(sorted(score, key=operator.itemgetter(1), reverse=True))
+        self._order = {p[1][0]: p[0]+1 for p in s}
+        print list(s)
+        print self._order
 
     def from_csv(self):
         self._timestamp = self._get_timestamp()
