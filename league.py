@@ -1,4 +1,4 @@
-import csv
+import unicodecsv as csv
 import os
 import collections
 import operator
