@@ -1,0 +1,30 @@
+<style>
+    table, td, th {
+        border: solid 1px;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<table>
+    <td>#</td>
+    <td>Name</td>
+    <td>Pts</td>
+    {% for column in players %}
+        <td>{{ column }}</td>
+    {% endfor %}
+    {% for row, player in players.items() %}
+        <tr>
+        <td>{{ row }}</td>
+        <td>{{ player['name'] }}</td>
+        <td>{{ score[row] }}</td>
+        {% for opp in players %}
+            <td>
+            {% for game in games[(row,opp)] %}
+                {{ game[1] }}
+            {% endfor %}
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
