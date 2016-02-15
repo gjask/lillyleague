@@ -13,10 +13,10 @@ app = Flask(__name__)
 def league_table():
     league.refresh()
     return render_template('table.html',
-                           players=league.players(),
-                           games=league.games(),
-                           score=league.score(),
-                           order=league.order()
+                           players=league.players,
+                           games=league.games,
+                           score=league.score,
+                           order=league.order
                            )
 
 
