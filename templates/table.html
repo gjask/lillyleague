@@ -28,24 +28,24 @@
         <a href="https://docs.google.com/document/d/13MxEwH9uZFdYG13E8GAF899YkJoY28zs2qPJqEwCzh8">Pravidla ligy</a> |
         <a href="http://liliovacajovna.cz/cze/">Stránky čajovny</a>
     </p>
-    <h3>Průběžné výsledky (last update: 10.2.2016)</h3>
+    <h3>Průběžné výsledky (last update: {{ league.timestamp|date }})</h3>
     <table>
         <td>#</td>
         <td>Hráč</td>
         <td>Body</td>
         <td>Pořadí</td>
-        {% for column in players %}
+        {% for column in league.players %}
             <td>{{ column }}</td>
         {% endfor %}
-        {% for row, player in players.items() %}
+        {% for row, player in league.players.items() %}
             <tr>
             <td>{{ row }}</td>
             <td>{{ player['name'] }}</td>
-            <td>{{ score[row] }}</td>
-            <td>{{ order[row] }}</td>
-            {% for opp in players %}
+            <td>{{ league.score[row] }}</td>
+            <td>{{ league.order[row] }}</td>
+            {% for opp in league.players %}
                 <td>
-                {% for game in games[(row,opp)] %}
+                {% for game in league.games[(row,opp)] %}
                     {{ game[1] }}
                 {% endfor %}
                 </td>
@@ -53,6 +53,6 @@
             </tr>
         {% endfor %}
     </table>
-    <p>Pořadí je pouze orientační! Nezohledňuje všechny pravidla ligy.</p>
+    <p>Pořadí je pouze orientační! Zohledňeno je pouze první kriterium pořadí.</p>
 </body>
 </html>

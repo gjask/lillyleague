@@ -2,14 +2,7 @@ import unicodecsv as csv
 import os
 import collections
 import operator
-
-# model:
-# players = {
-#     0: {'name': 'Jan Skrle'},
-# }
-# games = {
-#     (1,2): [('w', '+')]
-# }
+import datetime
 
 
 class Error(Exception):
@@ -23,17 +16,18 @@ class League(object):
         self.score = None
         self.order = None
         self.datafile = datafile
+        self.timestamp = None
         self.from_csv()
-        self._timestamp = 0
 
     def flush(self):
         self.players = {}
         self.games = collections.defaultdict(list)
         self.score = None
         self.order = None
+        self.timestamp = datetime.datetime.fromtimestamp(0)
 
     def refresh(self):
-        if self._timestamp < self._get_timestamp():
+        if self.timestamp < self._get_timestamp():
             self.from_csv()
 
     @staticmethod
@@ -50,7 +44,8 @@ class League(object):
         return opponent, color, sign
 
     def _get_timestamp(self):
-        return int(os.path.getmtime(self.datafile) + .5)
+        ts = os.path.getmtime(self.datafile)
+        return datetime.datetime.fromtimestamp(ts)
 
     @staticmethod
     def _eval_match(games):
@@ -82,10 +77,10 @@ class League(object):
     #     pass
 
     def from_csv(self):
-        self._timestamp = self._get_timestamp()
         with open(self.datafile, 'r') as fp:
             reader = csv.reader(fp)
             self.flush()
+            self.timestamp = self._get_timestamp()
             for row in reader:
                 me = int(row[0])
                 player = {'name': row[1]}
